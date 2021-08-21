@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Mẩu - Chúc mừng sinh nhật</title>
+      <meta charset='utf-8'>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://lipis.github.io/bootstrap-sweetalert/dist/sweetalert.css">
+      <head>
+         <meta name="description" content="Say Happy Birthday">
+         <link rel="icon" href="./img/calendar.ico" type="image/x-icon" />
+         <link rel='stylesheet' href='./style/style.css'>
+   </head>
+   <body>
+      <div class="dialog-birthday_message">
+         <div id="birthday_container" class="birthday_container">
+            <div class="balloons">
+               <div class="balloon">C</div>
+               <div class="balloon">B</div>
+               <div class="balloon">D</div>
+               <div class="balloon">A</div>
+               <div class="balloon">Y</div>
+            </div>
+            <h1>Happy Birthday, Mẩu!</h1>
+            <hr>
+            <small>Make with <i class="fa fa-heart text-danger"></i> by Péo</small>
+            <p id="txt"></p>
+            <canvas id="canvas_confetti">
+            </canvas>
+         </div>
+      </div>
+      <img class="img img-responsive img-circle" src="./img/girl.jpg" style="max-width: 150px"alt="">
+   </body>
+   <script src="./js/jquery.js"></script>
+   <script src='./js/lettering.js'></script>
+   <script type="text/javascript">
+      //Setup canvas by creating in doc
+      var canvas = document.getElementById('canvas_confetti');
+      var context = canvas.getContext('2d');
+      canvas.width = document.getElementById('birthday_container').clientWidth;
+      canvas.height = document.getElementById('birthday_container').clientHeight;
+
+      document.getElementById('birthday_container').appendChild(canvas);
+      var calculatedDensity = canvas.width * 0.0085;
+      var calculatedVelocity = canvas.width * 0.0037;
+      var calculatedLife = canvas.height * .65;
+      var calculatedStartingX = canvas.width / 2;
+      
+      var particles = {},
+        particleIndex = 0,
+        settings = {
+            density: calculatedDensity,
+            particleSize: 8,
+            particleSizeVariety: 1.5,
+            startingX: calculatedStartingX,
+            startingY: -20,
+            velX: calculatedVelocity,
+            velY:2,
+            gravity: 0.015,
+            //maxLife: 300,
+            maxLife: calculatedLife,
+            particleColours: ["#F06292","#BA68C8","#64B5F6","#4DD0E1","#81C784","#DCE775","#FFD54F","#FF8A65","#EEEEEE"]
+        };
+      
+      //Function that will create particles
+      function Particle() {
+        //Starting positions and velocities
+        this.x = settings.startingX;
+        this.y = settings.startingY;
+        //Random X and Y velocities
+        this.vx = (Math.random() * (settings.velX)) - (settings.velX/2);
+        this.vy = (Math.random() * (settings.velY)) - (settings.velY/2);
+
+        //Set up rotation & center of origin
+        this.rot = 0;
+        this.centerOfOriginX = -this.particleSize/2;
+        this.centerOfOriginY = -this.particleSize/4;
+      
+        this.particleSize = parseInt((Math.random()*(settings.particleSizeVariety*2)) + settings.particleSize);
+      
+        //Choose a random colour
+        this.particleColor = settings.particleColours[parseInt(Math.random()*settings.particleColours.length)];
+      
+        //Add new particle to index - this is a way to store the particles created
+        particleIndex++;
+        particles[particleIndex] = this;
+        this.id = particleIndex;
+        //Will be used later to remove particle
+        this.life = -10 + parseInt(Math.random()*20);
+      }
+      
+      //Add a 'draw' method to the Particle function
+      Particle.prototype.draw = function() {
+      
+        this.x += this.vx;
+        this.y += this.vy;
+      
+        //calculate rotation
+        var period = 100;
+        this.rot += Math.sin(this.life * 2 * Math.PI / period)/2 * (Math.random()*2);
+      
+        //Add gravity
+        this.vy += settings.gravity;
+      
+        //Age the particle by adding to 'life'
+        this.life++;
+      
+        //Remove the particle if it's old
+        if (this.life >= settings.maxLife) {
+            delete particles[this.id];
+        }
+      
+        //Create shape
+        context.clearRect(0, settings.groundLevel, canvas.width, canvas.height);
+        context.beginPath();
+        context.fillStyle = this.particleColor;
+        //save context position
+        context.save();
+        context.translate(this.x,this.y);
+      
+        var rotationAmount = 5;
+        //rotate by sine value
+        context.rotate(this.rot/rotationAmount);
+      
+        //translate to near random center of origin
+        context.translate(this.centerOfOriginX,this.centerOfOriginY);
+      
+        context.globalAlpha = 0.9;
+        context.fillRect(0,0,this.particleSize,this.particleSize/2);
+        context.restore();
+      }
+      
+      //Set up interval to draw particles
+      setInterval(function() {
+        //Fillstyle transparency adds motion trails
+        //#673AB7 purple
+        //#2196F3 blue
+        //#009688 teal
+        //#FFEB3B yellow
+        // "rgba(39,174,96,.98)"; green
+        context.fillStyle = '#f7fcfd'
+        context.fillRect(0, 0, canvas.width, canvas.height);
+      
+        // Draw the particles
+        for (var i = 0; i < settings.density; i++) {
+            // Random chance of creating a particle corresponding to an chance of 1 per second per "density" value
+            if (Math.random() > 0.97) {
+              new Particle();
+            }
+        }
+      
+        //Use the draw method for all the particles in particles[]
+        for (var i in particles) {
+          particles[i].draw();
+        }
+      }, 16);
+      
+   </script>
+   <script type="text/javascript">
+      $( document ).ready(function() {
+      
+        var c=document.getElementById("canvas_confetti");
+        var ctx=c.getContext("2d");
+        ctx.beginPath();
+        ctx.arc(95,50,40,0,2*Math.PI);
+        ctx.stroke();
+      
+      });
+   </script>
+   <script type="text/javascript">
+      $('h1').lettering();
+      
+      var WIN_WIDTH = window.innerWidth;
+      var WIN_HEIGHT = window.innerHeight;
+      
+      for (var i = 0; i < 50; i++) {if (window.CP.shouldStopExecution(1)){break;}if (window.CP.shouldStopExecution(1)){break;}
+         var heart = createHeart();
+         document.body.appendChild(heart);
+      }
+      window.CP.exitedLoop(1);
+      
+      window.CP.exitedLoop(1);
+      
+      
+      function createHeart() {
+         var heart = document.createElement('span');
+         heart.classList.add('fa', 'fa-fw', 'fa-heart');
+         heart.style.position = 'absolute';
+         heart.style.display = 'block';
+         heart.style.top = Math.random() * WIN_HEIGHT + 'px';
+         heart.style.left = Math.random() * WIN_WIDTH + 'px';
+         
+         return heart;
+      }
+   </script>
+   <script src="./js/sweetalert.js"></script>
+   <script src="./js/typed.js"></script>
+   <script src="./js/main.js"></script>
+   <div style="display:none">
+      <iframe width="300" height="84" src="./music/music.mp3" frameborder="0" allowfullscreen="true"></iframe>
+   </div>
+   <script>
+      $(function(){
+      
+        $("#txt").typed({
+          strings: [
+             "Chúc Mừng Sinh Nhật Mẩu (25-08-1999)" , 
+             "Chúc em có một sinh nhật thật là vui vẻ!", 
+             "Chúc em gặp nhiều thành công trong cuộc sống!",
+             "Best Wishes For You!"
+          ],
+          typeSpeed: 30,
+          smartBackspace: true
+        });
+      
+      });
+   </script>
+</html>
