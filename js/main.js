@@ -14,23 +14,25 @@ function handleSendGift(inputValue) {
 function handleHPBD() {
   setTimeout(function() {
       swal({
-              title: "Bạn nhận được một món quà!",
-              text: "Duck vừa gửi bạn một món quà đặc biệt nhân ngày sinh nhật của bạn",
-              imageUrl: "https://media.giphy.com/media/1wmOyZYoGzz003R03Y/giphy.gif",
+              title: "Điều ước",
+              text: "Trong sinh nhật lần này em muốn ước điều gì nào?",
+              imageUrl: "https://media.giphy.com/media/9rO5Aksmn0dHQKXJAu/giphy.gif?cid=ecf05e47c01212bm5tqyki1zsqz4yudjmfki8bqrpqq9yw5i&rid=giphy.gif&ct=g",
               showCancelButton: true,
               confirmButtonColor: "#DD6B55",
-              confirmButtonText: "Nhận quà ngay",
-              cancelButtonText: "Không cần, cám ơn",
+              confirmButtonText: "Ước ngay",
+              cancelButtonText: "Để sau",
               closeOnConfirm: false,
               closeOnCancel: false
           },
           function(isConfirm) {
               if (isConfirm) {
                   swal({
-                          title: "Bạn có phải là Mẩu?",
+                          title: "Xác nhận",
                           text: "Nhập mã xác nhận",
+                          imageUrl: "https://media.giphy.com/media/JYZ397GsFrFtu/giphy.gif",
                           type: "input",
-                          showCancelButton: true,
+                          confirmButtonColor: "#DD6B55",
+                          showCancelButton: false,
                           closeOnConfirm: false,
                           showLoaderOnConfirm: true,
                           animation: "slide-from-top",
@@ -39,37 +41,46 @@ function handleHPBD() {
                       function(inputValue) {
                           if (inputValue === false) return false;
                           if (inputValue !== "2508") {
-                              swal.showInputError("Nhập sai rồi kìa :v");
+                              swal.showInputError("Nhập sai rồi kìa");
                               return false
                           }
 
                           setTimeout(function() {
                               swal({
-                                      title: "Nhập tên món quà nào đó",
-                                      text: "Mẩu muốn nhận quà gì nào?",
+                                      title: "Điều ước",
+                                      text: "Em muốn ước điều gì nào?",
                                       type: "input",
-                                      showCancelButton: true,
+                                      showCancelButton: false,
                                       closeOnConfirm: false,
                                       animation: "slide-from-top",
-                                      inputPlaceholder: "Quà gì cũng được nè!"
+                                      inputPlaceholder: "Ghi càng dài càng tốt nhé..."
                                   },
                                   async function(inputValue) {
                                       if (inputValue === false) return false;
                                       if (inputValue === "") {
-                                          swal.showInputError("Ơ thế không muốn nhận quà à?");
+                                          swal.showInputError("Sao điều ước lại trống thế kia 😕");
                                           return false
                                       }
 
                                       await handleSendGift(inputValue);
 
-                                      swal("", "Món quà : " + inputValue + " đã được gửi tới Duck!", "success");
-
+                                      swal({
+                                        title: "Điều ước",
+                                        text: "Điều ước của em đã được gửi tới Duck rồi nhé!",
+                                        imageUrl: "https://media.giphy.com/media/vIJaz7nMJhTUc/giphy.gif",
+                                        showCancelButton: false,
+                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "Được luôn",
+                                        cancelButtonText: "Để sau",
+                                        closeOnConfirm: false,
+                                        closeOnCancel: false
+                                      });
                                   });
                           }, 3000);
                       });
 
               } else {
-                swal("KHÔNG NHẬN ", "Bạn vừa từ chối món quà từ Duck,    Ấn F5 nếu muốn nhận lại quà!", "error");
+                swal("Ơ em không ước à 😳", "Nếu muốn ước lại thì truy cập lại vào trang này nhé!", "error");
               }
           });
   }, 8000);
